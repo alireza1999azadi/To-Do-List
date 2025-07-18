@@ -8,8 +8,13 @@ import SelectedProject from "./components/SelectedProject";
 function App() {
   const [proState, setProState] = useState({
     selectedProjectId: undefined,
-    projects: []
+    projects: [],
+    tasks:[],
   })
+
+  function handleAddTask(){}
+
+  function handleDeleteTask(){}
 
   function handleStartAddProject() {
     setProState(prevState => {
@@ -43,9 +48,14 @@ function App() {
 
   console.log(proState)
 
-  const selectedProject=proState.projects.find(project=>project.id===proState.selectedProjectId )
+  const selectedProject = proState.projects.find(project => project.id === proState.selectedProjectId)
 
-  let content=<SelectedProject project={selectedProject} />
+  let content = <SelectedProject 
+  project={selectedProject}
+  onDelete={handleDelete} 
+  onAddTask={handleAddTask}
+  onDeleteTask={handleDeleteTask}
+  />
 
   if (proState.selectedProjectId === null) {
     content = <NewProject onAdd={handleAddProject} onClose={handleClose} />
@@ -53,11 +63,21 @@ function App() {
     content = <NoProjectSelected oSAP={handleStartAddProject} />
   }
 
-  function handleSelectProject(id){
-    setProState((prevState)=>{
-      return{
+  function handleSelectProject(id) {
+    setProState((prevState) => {
+      return {
         ...prevState,
-        selectedProjectId:id,
+        selectedProjectId: id,
+      }
+    })
+  }
+
+  function handleDelete() {
+    setProState(prevState => {
+      return {
+        ...prevState,
+        selectedProjectId: undefined,
+        projects: prevState.projects.filter((project) => { project.id !== prevState.selectedProjectId })
       }
     })
   }
@@ -66,7 +86,7 @@ function App() {
     <>
       <main className="h-screen my-8 flex gap-8">
         <ProjectsSidebar oSAP={handleStartAddProject} projects={proState.projects}
-        onSelectProject={handleSelectProject}
+          onSelectProject={handleSelectProject}
         />
         {content}
       </main>
